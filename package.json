@@ -1,7 +1,7 @@
 {
-  "name": "simple-react-full-stack",
+  "name": "mern-club-fair-signup",
   "version": "1.0.0",
-  "description": "Boilerplate to build a full stack web application using React, Node.js, Express and Webpack.",
+  "description": "A signup for my school's club fair using the MERN Stack",
   "main": "src/server/index.js",
   "scripts": {
     "build": "webpack --mode production",
@@ -10,7 +10,7 @@
     "server": "nodemon src/server/index.js",
     "dev": "concurrently \"npm run server\" \"npm run client\""
   },
-  "author": "Sandeep Raveesh",
+  "author": "Justin Parrondo",
   "license": "ISC",
   "dependencies": {
     "babel-polyfill": "^6.26.0",
