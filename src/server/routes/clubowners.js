@@ -6,7 +6,23 @@ require('dotenv').config();
 
 const ClubOwner = require('../models/ClubOwner');
 
-router.post("/register", (req, res) => {
+const validateRegisterFields = (req, res, next) => {
+  const emailRegex = /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/;
+  const passwordRegex = /^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d]{8,}$/;
+
+  if (!req.body.name || req.body.name === '') {
+    return res.status(403).json({ error: "Name is required" });
+  } else if (!req.body.email || !emailRegex.test(req.body.email)) {
+    return res.status(403).json({ error: "Invalid email" });
+  } else if (!req.body.password || !passwordRegex.test(req.body.password)) {
+    return res.status(403).json({ error: "Password must be at least 8 characters, with at least one letter and one number" });
+  } else {
+    next();
+  }
+};
+
+router.post("/register", validateRegisterFields, (req, res) => {
+
   // Create ClubOWner Object
   let newClubOwner = new ClubOwner({
     name: req.body.name,
@@ -19,7 +35,12 @@ router.post("/register", (req, res) => {
       newClubOwner.password = hash;
       // Try and save the mongoose object
       newClubOwner.save((err, newClubOwner) => {
-        if (err) { return res.status(400).json({ error: err.message }); }
+        if (err) {
+          let { message } = err;
+          if (err.code === 11000) {
+            message = "This email is already registered!";
+          }
+          return res.status(400).json({ error: message }); }
         // Create a JSON Web Token storing the id of the new ClubOwner document
         jwt.sign({"id": newClubOwner._id }, process.env.SECRET, (err, token) => {
           if (err) { throw err; }
