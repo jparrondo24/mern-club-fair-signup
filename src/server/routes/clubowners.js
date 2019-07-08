@@ -119,6 +119,7 @@ router.get('/', validateAccessToken, (req, res) => {
   });
 });
 
+
 const validateUpdateFields = (req, res, next) => {
   const emailRegex = /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/;
   const passwordRegex = /^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d]{8,}$/;
@@ -127,26 +128,20 @@ const validateUpdateFields = (req, res, next) => {
     if (!emailRegex.test(req.body.email)) {
       return res.status(400).json({ error: "Invalid email" });
     }
-  } else if (req.body.newPassword) {
+  }
+  if (req.body.newPassword) {
     if (!req.body.oldPassword) {
       return res.status(400).json({ error: "Old password is required"});
     }
-    ClubOwner.findById(res.locals.decoded.id, (err, clubOwner) => {
-      if (err) { throw err; }
-      bcrypt.compare(req.body.oldPassword, clubOwner.password, (err, result) => {
-        if (!result) { return res.status(403).json({ error: "Old password is incorrect "}); }
-        if (!passwordRegex.test(req.body.newPassword)) {
-          return res.status(400).json({ error: "New password must be at least 8 characters, with at least one letter and one number" });
-        }
-        next();
-      });
-    });
+    if (!passwordRegex.test(req.body.newPassword)) {
+      return res.status(400).json({ error: "New password must be at least 8 characters, with at least one letter and one number" });
+    }
   }
+  next();
 }
 
 router.put('/update', [validateAccessToken, validateUpdateFields], (req, res) => {
-  console.log("Here");
-  const newData = { };
+  const newData = {};
   if (req.body.name) {
     newData.name = req.body.name
   }
@@ -159,10 +154,22 @@ router.put('/update', [validateAccessToken, validateUpdateFields], (req, res) =>
     console.log(hash);
     newData.password = hash;
   }
-  console.log(newData);
-  ClubOwner.updateOne({ _id: res.locals.decoded.id }, newData, (err) => {
+  ClubOwner.findById(res.locals.decoded.id, (err, clubOwner) => {
     if (err) { throw err; }
-    return res.json({ success: "Successfully updated your Club Owner account" });
+    if (req.body.oldPassword) {
+      bcrypt.compare(req.body.oldPassword, clubOwner.password, (err, result) => {
+        if (!result) { return res.status(403).json({ error: "Old password is incorrect "}); }
+        ClubOwner.updateOne({ _id: res.locals.decoded.id }, newData, (err) => {
+          if (err) { throw err; }
+          return res.json({ success: "Successfully updated your Club Owner account" });
+        });
+      });
+    } else {
+      ClubOwner.updateOne({ _id: res.locals.decoded.id }, newData, (err) => {
+        if (err) { throw err; }
+        return res.json({ success: "Successfully updated your Club Owner account" });
+      });
+    }
   });
 });
 
