@@ -145,6 +145,7 @@ const validateUpdateFields = (req, res, next) => {
 }
 
 router.put('/update', [validateAccessToken, validateUpdateFields], (req, res) => {
+  console.log("Here");
   const newData = { };
   if (req.body.name) {
     newData.name = req.body.name
