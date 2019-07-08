@@ -5,9 +5,16 @@ const passport = require('passport');
 const clubowners = require('./routes/clubowners');
 const bodyParser = require('body-parser');
 const cookieParser = require('cookie-parser');
+const cors = require('cors');
 
 require('dotenv').config();
 
+if (process.env.NODE_ENV === "production") {
+  app.use(cors({
+    origin: 'https://git.heroku.com/mern-club-fair-signup.git',
+    optionsSuccessStatus: 200
+  }));
+}
 app.use(bodyParser.urlencoded());
 app.use(bodyParser.json());
 app.use(express.static('dist'));
