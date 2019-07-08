@@ -4,12 +4,14 @@ const mongoose = require('mongoose');
 const passport = require('passport');
 const clubowners = require('./routes/clubowners');
 const bodyParser = require('body-parser');
+const cookieParser = require('cookie-parser');
 
 require('dotenv').config();
 
 app.use(bodyParser.urlencoded());
 app.use(bodyParser.json());
 app.use(express.static('dist'));
+app.use(cookieParser());
 
 app.use("/clubowners", clubowners);
 

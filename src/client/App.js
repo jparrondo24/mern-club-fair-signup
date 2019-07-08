@@ -6,6 +6,7 @@ import Home from './components/Home';
 import Register from './components/Register';
 import Login from './components/Login';
 import FlashMessage from './components/FlashMessage';
+import Profile from './components/Profile';
 
 export default class App extends Component {
   constructor(props) {
@@ -14,17 +15,22 @@ export default class App extends Component {
       flashMessages: []
     }
     this.handleNewFlashMessage = this.handleNewFlashMessage.bind(this);
+    this.clearFlashMessages = this.clearFlashMessages.bind(this);
   }
 
   handleNewFlashMessage(newFlashMessage) {
     this.setState((prevState) => {
-      console.log(prevState.flashMessages);
       let newFlashMessages = prevState.flashMessages.slice(0);
       newFlashMessages.push(newFlashMessage);
-      console.log(newFlashMessages);
       return {
         flashMessages: newFlashMessages
       };
+    });
+  }
+
+  clearFlashMessages() {
+    this.setState({
+      flashMessages: []
     });
   }
 
@@ -39,10 +45,17 @@ export default class App extends Component {
           <Switch>
             <Route exact path="/" component={Home} />
             <Route
-              path="/register"
-              render={(props) => <Register {...props} handleNewFlashMessage={this.handleNewFlashMessage} />}
+              exact path="/register"
+              render={(props) => <Register {...props} handleNewFlashMessage={this.handleNewFlashMessage} clearFlashMessages={this.clearFlashMessages} />}
             />
-            <Route path="/login" component={Login} />
+            <Route
+              exact path="/login"
+              render={(props) => <Login {...props} handleNewFlashMessage={this.handleNewFlashMessage} clearFlashMessages={this.clearFlashMessages} />}
+            />
+            <Route
+              exact path="/profile"
+              render={(props) => <Profile {...props} handleNewFlashMessage={this.handleNewFlashMessage} clearFlashMessages={this.clearFlashMessages} />}
+            />
           </Switch>
         </div>
       </Router>

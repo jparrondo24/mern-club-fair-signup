@@ -1,5 +1,4 @@
 import React from 'react';
-import { Link } from 'react-router-dom';
 
 export default class Register extends React.Component {
   constructor(props) {
@@ -40,14 +39,15 @@ export default class Register extends React.Component {
           message: "Successfully signed up!",
           isSuccess: true
         }
+        this.props.clearFlashMessages();
         this.props.handleNewFlashMessage(newFlashMessage);
-        console.log(result);
+        this.props.history.push('/profile');
       }
     });
   }
 
   render() {
-    return(
+    return (
       <form onSubmit={this.handleSubmit}>
         <h1>Register</h1>
         <br />
@@ -65,7 +65,6 @@ export default class Register extends React.Component {
         </div>
         <button type="submit" className="btn btn-primary">Submit</button>
         <br />
-        <Link to="/login">Login</Link>
       </form>
     );
   }
