@@ -21,7 +21,7 @@ export default class Register extends React.Component {
     event.preventDefault();
     $.ajax({
       type: "POST",
-      url: "/clubowners/register",
+      url: "https://localhost:3000/clubowners/register",
       data: {
         name: this.state.name,
         email: this.state.email,
