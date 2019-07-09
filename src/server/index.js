@@ -6,13 +6,17 @@ const clubowners = require('./routes/clubowners');
 const bodyParser = require('body-parser');
 const cookieParser = require('cookie-parser');
 const cors = require('cors');
+const history = require('connect-history-api-fallback');
 
 require('dotenv').config();
 
 if (process.env.NODE_ENV === "production") {
   app.use(cors({
-    origin: 'https://git.heroku.com/mern-club-fair-signup.git',
+    origin: 'https://mern-club-fair-signup.herokuapp.com/',
     optionsSuccessStatus: 200
+  }));
+  app.use(history({
+    verbose: true
   }));
 }
 app.use(bodyParser.urlencoded());
