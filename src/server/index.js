@@ -22,6 +22,12 @@ app.use(cookieParser());
 
 app.use("/clubowners", clubowners);
 
+if (process.env.NODE_ENV === "production") {
+  app.get('*', (req, res) =>{
+    res.sendFile(path.resolve(__dirname, 'public/index.html'));
+  });
+}
+
 const uri = process.env.MONGO_URI;
 mongoose.connect(uri, { useNewUrlParser: true });
 const connection = mongoose.connection;
