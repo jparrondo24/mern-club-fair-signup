@@ -7,6 +7,7 @@ const validateEmail = (email) => {
 };
 
 const ClubOwnerSchema = new Schema({
+  _id: Schema.Types.ObjectId,
   name: {
     type: String,
     required: 'Name is required'
@@ -25,7 +26,11 @@ const ClubOwnerSchema = new Schema({
   date: {
     type: Date,
     default: Date.now
+  },
+  club: {
+    type: Schema.Types.ObjectId,
+    ref: "Club"
   }
-})
+});
 
 module.exports = ClubOwner = mongoose.model("ClubOwner", ClubOwnerSchema);

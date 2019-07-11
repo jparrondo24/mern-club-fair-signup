@@ -37,7 +37,8 @@ module.exports = {
     open: true,
     historyApiFallback: true,
     proxy: {
-      "/clubowners": "http://localhost:8080"
+      "/clubowners": "http://localhost:8080",
+      "/clubs": "http://localhost:8080"
     }
   },
   plugins: [

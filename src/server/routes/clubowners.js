@@ -2,6 +2,7 @@ const express = require("express");
 const router = express.Router();
 const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
+const mongoose = require("mongoose");
 require('dotenv').config();
 
 const ClubOwner = require('../models/ClubOwner');
@@ -24,6 +25,7 @@ const validateRegisterFields = (req, res, next) => {
 router.post("/register", validateRegisterFields, (req, res) => {
   // Create ClubOWner Object
   let newClubOwner = new ClubOwner({
+    _id: new mongoose.Types.ObjectId(),
     name: req.body.name,
     email: req.body.email,
     password: req.body.password
@@ -113,8 +115,11 @@ router.get('/', validateAccessToken, (req, res) => {
     }
     const clubOwnerData = {
       name: clubOwner.name,
-      email: clubOwner.email
+      email: clubOwner.email,
+      students: clubOwner.students
     }
+    console.log(clubOwner);
+    if (clubOwner.club) clubOwnerData.club = clubOwner.club;
     return res.json(clubOwnerData);
   });
 });
@@ -140,7 +145,7 @@ const validateUpdateFields = (req, res, next) => {
   next();
 }
 
-router.put('/update', [validateAccessToken, validateUpdateFields], (req, res) => {
+router.put('/', [validateAccessToken, validateUpdateFields], (req, res) => {
   const newData = {};
   if (req.body.name) {
     newData.name = req.body.name

@@ -2,11 +2,13 @@ const express = require('express');
 const app = express();
 const mongoose = require('mongoose');
 const passport = require('passport');
-const clubowners = require('./routes/clubowners');
 const bodyParser = require('body-parser');
 const cookieParser = require('cookie-parser');
 const cors = require('cors');
 const history = require('connect-history-api-fallback');
+
+const clubowners = require('./routes/clubowners');
+const clubs = require('./routes/clubs');
 
 require('dotenv').config();
 
@@ -24,13 +26,8 @@ app.use(bodyParser.json());
 app.use(express.static('dist'));
 app.use(cookieParser());
 
+app.use("/clubs", clubs);
 app.use("/clubowners", clubowners);
-
-if (process.env.NODE_ENV === "production") {
-  app.get('*', (req, res) =>{
-    res.sendFile(path.resolve(__dirname, 'public/index.html'));
-  });
-}
 
 const uri = process.env.MONGO_URI;
 mongoose.connect(uri, { useNewUrlParser: true });

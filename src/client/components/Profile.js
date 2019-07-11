@@ -1,5 +1,6 @@
 import React from 'react';
 import axios from 'axios';
+import ClubManager from './ClubManager';
 
 export default class Profile extends React.Component {
   constructor(props) {
@@ -7,6 +8,7 @@ export default class Profile extends React.Component {
     this.state = {
       name: '',
       email: '',
+      club: null,
       isInEditMode: {
         name: false,
         email: false,
@@ -41,7 +43,7 @@ export default class Profile extends React.Component {
       } else {
         axios({
           method: 'PUT',
-          url: '/clubowners/update',
+          url: '/clubowners',
           data: {
             name: this.state.name
           },
@@ -89,7 +91,7 @@ export default class Profile extends React.Component {
       } else {
         axios({
           method: 'PUT',
-          url: '/clubowners/update',
+          url: '/clubowners',
           data: {
             email: this.state.email
           },
@@ -143,7 +145,7 @@ export default class Profile extends React.Component {
     if (this.state.newPassword === this.state.newPasswordCheck) {
       axios({
         method: 'PUT',
-        url: '/clubowners/update',
+        url: '/clubowners',
         data: {
           oldPassword: this.state.oldPassword,
           newPassword: this.state.newPassword
@@ -229,10 +231,18 @@ export default class Profile extends React.Component {
     axios.get('/clubowners', { withCredentials: true })
       .then((response) => {
         const { data } = response;
-        this.setState({
-          name: data.name,
-          email: data.email
-        });
+        if (data.club) {
+          this.setState({
+            name: data.name,
+            email: data.email,
+            club: data.club
+          });
+        } else {
+          this.setState({
+            name: data.name,
+            email: data.email
+          });
+        }
       })
       .catch((err) => {
         if (err.response) {
@@ -326,6 +336,13 @@ export default class Profile extends React.Component {
         {passwordForm}
         <br />
         <button onClick={this.handleDelete} className="btn btn-danger">Delete Account <i className="fa fa-trash"></i></button>
+        <br />
+        <br />
+        <ClubManager
+          clearFlashMessages={this.props.clearFlashMessages}
+          handleNewFlashMessage={this.props.handleNewFlashMessage}
+          clubId={this.state.club}
+        />
       </div>
     );
   }
